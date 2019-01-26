@@ -99,7 +99,7 @@ do
 done
 
 # Install Software
-#sudo emerge -a "$1"
+sudo emerge -a "$1"
 
 # Make the user do stuff
 echo "You make want to run 'emerge --changed-use @world'"
