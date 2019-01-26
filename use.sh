@@ -82,7 +82,7 @@ do
 done
 
 # Present user with options and save the answers
-dialog --stdout --checklist "Choose USE flags:" 0 0 0 --file "$dialogPrompt" \
+dialog --title "$1" --stdout --checklist "Choose USE flags:" 0 0 0 --file "$dialogPrompt" \
   > "$dialogAnswers"
 
 # Shove those bad bois in the global use flags.  Could also put them in package
