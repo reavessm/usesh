@@ -75,7 +75,7 @@ for use in `awk '{print $1}' "$dialogPrompt" `
 do 
   grep "$use" $makeconf &>/dev/null && \
     sed -i '/'"$use"'/ s/off/on/g' "$dialogPrompt"
-  grep "$use" $autounmask &>/dev/null && \
+  grep -E "$1.*$use" $autounmask &>/dev/null && \
     sed -i '/'"$use"'/ s/off/on/g' "$dialogPrompt"
   grep "$use" "$pkguse/$1" &>/dev/null && \
     sed -i '/'"$use"'/ s/off/on/g' "$dialogPrompt"
