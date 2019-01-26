@@ -1,5 +1,5 @@
 # usesh
-Choose USE flags while installing software on gentoo
+Choose USE flags while installing software on gentoo.  Very Portmaster-esque
 
 ![screenshot](screenshot.png)
 
