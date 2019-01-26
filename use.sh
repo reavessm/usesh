@@ -54,6 +54,8 @@ file="/tmp/usething"
 dialogPrompt="/tmp/dialog"
 dialogAnswers="/tmp/dialog.answers"
 makeconf="/etc/portage/make.conf"
+pkguse="/etc/portage/package.use"
+autounmask="$pkguse/zz-autounmask"
 
 # Make sure files e
 for thing in "$file" "$dialogPrompt" "$dialogAnswers"
@@ -67,6 +69,17 @@ awk -F [\/:[:space:]] "/$1:/ "'{print $3,"\t",substr($0, index($0,$5))}' \
 
 # Format options for Dialog
 awk -F "\t" '{print $1,"\""$2"\"","off"}' "$file" > "$dialogPrompt"
+
+# Check multiple places for use flags
+for use in `awk '{print $1}' "$dialogPrompt" `
+do 
+  grep "$use" $makeconf &>/dev/null && \
+    sed -i '/'"$use"'/ s/off/on/g' "$dialogPrompt"
+  grep "$use" $autounmask &>/dev/null && \
+    sed -i '/'"$use"'/ s/off/on/g' "$dialogPrompt"
+  grep "$use" "$pkguse/$1" &>/dev/null && \
+    sed -i '/'"$use"'/ s/off/on/g' "$dialogPrompt"
+done
 
 # Present user with options and save the answers
 dialog --stdout --checklist "Choose USE flags:" 0 0 0 --file "$dialogPrompt" \
@@ -86,7 +99,7 @@ do
 done
 
 # Install Software
-sudo emerge -a "$1"
+#sudo emerge -a "$1"
 
 # Make the user do stuff
 echo "You make want to run 'emerge --changed-use @world'"
