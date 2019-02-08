@@ -56,12 +56,17 @@ dialogAnswers="/tmp/dialog.answers"
 makeconf="/etc/portage/make.conf"
 pkguse="/etc/portage/package.use"
 autounmask="$pkguse/zz-autounmask"
+fullname=`awk -F ":" "/$1:/"'{print $1;exit}' /usr/portage/profiles/use.local.desc`
 
-# Make sure files e
+# Make sure files exist
 for thing in "$file" "$dialogPrompt" "$dialogAnswers"
 do
+  rm -f "$thing"
   touch "$thing"
 done
+
+# This helps the greppy boi
+touch "$pkguse/$1"
 
 # Search use options for given package
 awk -F [\/:[:space:]] "/$1:/ "'{print $3,"\t",substr($0, index($0,$5))}' \
@@ -89,7 +94,8 @@ dialog --title "$1" --stdout --checklist "Choose USE flags:" 0 0 0 --file "$dial
 # specific use flags, but that would require changing the first awk statement
 for use in `cat "$dialogAnswers"`
 do
-  sed -i '/'"$use"'/! s/USE="/USE="'"$use"' /' "$makeconf"
+  # I know i can use 'sed' here, but am too drunk
+  grep "$use" "$pkguse/$1" || echo "$fullname $use" >> "$pkguse/$1"
 done
 
 # Clean up.  Maybe this is more secure
@@ -103,3 +109,6 @@ sudo emerge -a "$1"
 
 # Make the user do stuff
 echo "You make want to run 'emerge --changed-use @world'"
+
+# Delete use file if empty
+[ -n "$pkguse/$1" ] && rm "$pkguse/$1"
