@@ -88,7 +88,7 @@ done
 
 # Present user with options and save the answers
 dialog --title "$1" --stdout --checklist "Choose USE flags:" 0 0 0 --file "$dialogPrompt" \
-  > "$dialogAnswers"
+  > "$dialogAnswers" || exit 0
 
 # Shove those bad bois in the global use flags.  Could also put them in package
 # specific use flags, but that would require changing the first awk statement
@@ -111,4 +111,4 @@ sudo emerge -a "$1"
 echo "You make want to run 'emerge --changed-use @world'"
 
 # Delete use file if empty
-[ -n "$pkguse/$1" ] && rm "$pkguse/$1"
+#[ -n "$pkguse/$1" ] && rm "$pkguse/$1"
