@@ -68,6 +68,8 @@ done
 # This helps the greppy boi
 touch "$pkguse/$1"
 
+grep $1 /usr/portage/profiles/use.local.desc || emerge -av $1
+
 # Search use options for given package
 awk -F [\/:[:space:]] "/$1:/ "'{print $3,"\t",substr($0, index($0,$5))}' \
   /usr/portage/profiles/use.local.desc > "$file"
